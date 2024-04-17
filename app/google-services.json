@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "1032489412450",
+    "firebase_url": "https://line-chat-73b93-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "line-chat-73b93",
+    "storage_bucket": "line-chat-73b93.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032489412450:android:6c1da5534fa8a0a8fe6e3b",
+        "android_client_info": {
+          "package_name": "com.example.chatroom_line"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbM2kmfsOCLT5JfQ47gTMfPdQlO4b3HMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032489412450:android:b23e49bbd5a88807fe6e3b",
+        "android_client_info": {
+          "package_name": "com.example.new_chatroom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbM2kmfsOCLT5JfQ47gTMfPdQlO4b3HMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
