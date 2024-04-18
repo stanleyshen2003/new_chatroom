@@ -5,7 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.chatroom_line.data.Chat
+import com.example.chatroom_line.data.ChatAdapter
+import com.example.chatroom_line.data.DataSource
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -15,6 +22,9 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: ChatAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -22,18 +32,38 @@ class MainActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.button)
         val database = FirebaseDatabase.getInstance().reference.child("chat")
 
+        val dataSource = DataSource.getDataSource(resources)
+        val chatList = dataSource.getChatList().value?.toMutableList() ?: mutableListOf()
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager =
+            LinearLayoutManager(this)
+
+        adapter = ChatAdapter(this, chatList ?: emptyList(), recyclerView)
+        recyclerView.adapter = adapter
+
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                Log.e("no error", "datachanged")
+
+                val chatList = mutableListOf<Chat>()
                 for (postSnapshot in dataSnapshot.children) {
                     // Retrieve post details
-                    val postTitle = postSnapshot.child("message").getValue(String::class.java)
-                    val postContent = postSnapshot.child("name").getValue(String::class.java)
-                    Log.d(TAG, "Post Title: $postTitle")
-                    Log.d(TAG, "Post Content: $postContent")
+                    val message = postSnapshot.child("message").getValue(String::class.java)
+                    val name = postSnapshot.child("name").getValue(String::class.java)
+                    val timestamp = postSnapshot.child("timestamp").getValue(Long::class.java)
+                    val newTimestamp: Long = timestamp ?: 0L
+                    // Create a Chat object
+                    val chat = Chat(name, message, newTimestamp)
 
-                    // TODO: handle the post (e.g., display it in your UI)
-
+                    // Insert the chat into the sorted position in the list
+                    insertSorted(chatList, chat)
+                }
+                runOnUiThread {
+                    adapter.updateData(chatList)
+                    for (chat in chatList){
+                        chat.name?.let { Log.d("name", it) }
+                        chat.message?.let { Log.d("message", it) }
+                        Log.d("timestamp", chat.timestamp.toString())
+                    }
                 }
             }
 
@@ -51,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                 val message = hashMapOf(
                     "name" to "Yourself",
                     "message" to textInput.text.toString(),
-                    "timesStamp" to System.currentTimeMillis()
+                    "timestamp" to System.currentTimeMillis()
                 )
                 FirebaseDatabase.getInstance().reference.child("chat").push().setValue(message)
                 textInput.text = null
@@ -60,5 +90,17 @@ class MainActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
+
+        val textInputLayout: TextInputLayout = findViewById(R.id.textInputLayout)
+        textInputLayout.setOnClickListener{
+            adapter.notifyDataSetChanged()
+        }
+    }
+    private fun insertSorted(chatList: MutableList<Chat>, chat: Chat) {
+        var i = chatList.size - 1
+        while (i >= 0 && chatList[i].timestamp > chat.timestamp) {
+            i--
+        }
+        chatList.add(i + 1, chat)
     }
 }
