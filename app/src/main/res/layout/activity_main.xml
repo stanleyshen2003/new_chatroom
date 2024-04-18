@@ -47,8 +47,9 @@
     <Button
         android:id="@+id/button"
         android:layout_width="99dp"
-        android:layout_height="58dp"
+        android:layout_height="61dp"
         android:text="Send"
+        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
         app:layout_constraintTop_toTopOf="@+id/textInputLayout"
