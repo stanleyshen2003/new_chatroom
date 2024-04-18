@@ -4,7 +4,9 @@ import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -89,11 +91,6 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception){
                 e.printStackTrace()
             }
-        }
-
-        val textInputLayout: TextInputLayout = findViewById(R.id.textInputLayout)
-        textInputLayout.setOnClickListener{
-            adapter.notifyDataSetChanged()
         }
     }
     private fun insertSorted(chatList: MutableList<Chat>, chat: Chat) {
